@@ -22,26 +22,34 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   TextEditingController txtContr = TextEditingController();
-  TextEditingController txtContr2 = TextEditingController();
+  late String edit_text;
 
-  longPress() {
+  longPress(String text, int index) {
     showDialog(
         context: context,
         builder: (context) {
+          txtContr.text = text;
           return AlertDialog(
             title: Text("Edit window"),
             content: TextField(
-              controller: txtContr2,
+              controller: txtContr,
               decoration: InputDecoration(
-                  border: OutlineInputBorder(), hintText: "Enter text"),
+                border: OutlineInputBorder(),
+                hintText: "Enter text",
+              ),
             ),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Close")),
-              TextButton(onPressed: () {}, child: Text("Ok")),
+                  child: Text("Cancel")),
+              TextButton(
+                  onPressed: () {
+                    box.putAt(index, txtContr.value.text);
+                    Navigator.pop(context);
+                  },
+                  child: Text("Save")),
             ],
           );
         });
@@ -64,7 +72,12 @@ class _MyAppState extends State<MyApp> {
                       return Row(
                         children: [
                           Text(box.getAt(index)),
-                          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+                          IconButton(
+                              onPressed: () {
+                                edit_text = box.getAt(index);
+                                longPress(box.getAt(index), index);
+                              },
+                              icon: Icon(Icons.edit)),
                           IconButton(
                               onPressed: () {
                                 box.deleteAt(index);
